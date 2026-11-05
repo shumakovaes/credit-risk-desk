@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: creditdesk
+      POSTGRES_PASSWORD: creditdesk
+      POSTGRES_DB: creditdesk
+    ports: ["127.0.0.1:5433:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U creditdesk -d creditdesk"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  init:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg://creditdesk:creditdesk@db:5432/creditdesk
+      DATA_MODE: ${DATA_MODE:-demo}
+    volumes: ["./artifacts:/app/artifacts", "./data/raw:/app/data/raw"]
+    depends_on:
+      db: {condition: service_healthy}
+    command: ["python", "scripts/bootstrap.py"]
+  api:
+    build: .
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://creditdesk:creditdesk@db:5432/creditdesk
+      MODEL_DIR: /app/artifacts
+    depends_on:
+      init: {condition: service_completed_successfully}
+    ports: ["127.0.0.1:8000:8000"]
+    volumes: ["./artifacts:/app/artifacts", "./data/raw:/app/data/raw"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+  ui:
+    build: .
+    restart: unless-stopped
+    command: ["streamlit", "run", "streamlit_app.py", "--server.address=0.0.0.0", "--server.port=8501"]
+    environment:
+      API_URL: http://api:8000
+    depends_on:
+      api: {condition: service_healthy}
+    ports: ["127.0.0.1:8501:8501"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+volumes:
+  pgdata:

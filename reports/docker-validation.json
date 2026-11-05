@@ -1,0 +1,91 @@
+{
+  "checked_at": "2026-11-05T20:06:30.047487+00:00",
+  "docker_engine": "27.3.1",
+  "docker_compose": "2.30.3-desktop.1",
+  "runtime": "Linux containers on Docker Desktop / Windows",
+  "containers": {
+    "db": {
+      "status": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:eb0fb2377534e65aad04f37838956b3dfb888e1a3dd3c1acf957bc6557eb6c7d"
+    },
+    "init": {
+      "status": "exited",
+      "health": null,
+      "exit_code": 0,
+      "image_id": "sha256:b52fd95cdfc7a450dc8feb8569ffdbd9c41354d93b3ff8317fdacc5e6e7952db"
+    },
+    "api": {
+      "status": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:7a4a5330f49e2a039ee73e60f52e6a61d60ce5af3f9b22537a928252cd6975d9"
+    },
+    "ui": {
+      "status": "running",
+      "health": "healthy",
+      "exit_code": 0,
+      "image_id": "sha256:7a1dbf27ba0edd83ac12bbcf28f212882c72f9a4ba5eba98ea21bae9c28c9da3"
+    }
+  },
+  "tests": {
+    "tests": 28,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "api_health": {
+    "status": "ok"
+  },
+  "ui_health": "ok",
+  "imported_rows": {
+    "clients": 5369,
+    "accounts": 4500,
+    "loans": 682,
+    "transactions": 1056320
+  },
+  "migration": {
+    "original_applications_preserved": 6,
+    "current_applications": 8
+  },
+  "linux_training": {
+    "model_version": "ba88ef9eb190",
+    "test": {
+      "n": 47,
+      "bad_loans": 6,
+      "prevalence": 0.1276595744680851,
+      "roc_auc": 0.6869918699186991,
+      "average_precision": 0.44929748062015507,
+      "brier": 0.10984193057475514,
+      "precision": 0.3333333333333333,
+      "recall": 0.6666666666666666,
+      "confusion_matrix_tn_fp_fn_tp": [
+        33,
+        8,
+        2,
+        4
+      ],
+      "calibration": {
+        "mean_predicted": [
+          0.004978284625158412,
+          0.01833647051610216,
+          0.038752802363133436,
+          0.08044566614420101,
+          0.4678240734908984
+        ],
+        "observed_fraction": [
+          0.1,
+          0.1111111111111111,
+          0.0,
+          0.0,
+          0.4
+        ]
+      }
+    }
+  },
+  "browser_scenarios": [
+    "portfolio with 682 loans",
+    "application submission and model factors"
+  ]
+}

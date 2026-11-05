@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "credit-risk-desk"
+version = "0.1.0"
+description = "An educational retail credit analysis desk with PostgreSQL, FastAPI and Streamlit"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115,<1", "uvicorn>=0.30,<1", "sqlalchemy>=2.0,<3",
+  "alembic>=1.14,<2", "psycopg[binary]>=3.2,<4", "pandas>=2.2,<4",
+  "scikit-learn>=1.6,<2", "joblib>=1.4,<2", "streamlit>=1.42,<2",
+  "plotly>=6,<8", "httpx>=0.28,<1", "python-dotenv>=1,<2"
+]
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+[project.scripts]
+credit-desk = "credit_risk_desk.cli:main"
+[tool.setuptools.packages.find]
+where = ["src"]
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["integration: needs TEST_DATABASE_URL pointing to a disposable PostgreSQL database"]

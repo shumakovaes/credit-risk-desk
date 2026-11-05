@@ -1,0 +1,131 @@
+{
+  "health": {
+    "status": "ok"
+  },
+  "mode": "berka",
+  "application": {
+    "application_id": "c71ae623-57d4-44e7-8610-f4b5c0adc5d7",
+    "dataset": {
+      "mode": "berka",
+      "reference_date": "1999-01-01",
+      "imported_at": "2026-11-05T19:57:10.214839+00:00"
+    },
+    "as_of": "1999-01-01",
+    "currency": "CZK",
+    "status": "manual_review",
+    "calculation": {
+      "monthly_payment": 5648.82,
+      "total_payment": 135571.6,
+      "interest": 15571.6,
+      "currency": "CZK",
+      "annual_rate_pct": 12,
+      "months": 24,
+      "assumption": "Номинальная ставка, ежемесячные платежи, без комиссий; последний платёж может отличаться из-за округления."
+    },
+    "rules": {
+      "version": "educational-v1",
+      "checks": [
+        {
+          "code": "amount",
+          "status": "passed",
+          "reason": "Сумма: 120,000 CZK; допустимо 1,000–1,000,000."
+        },
+        {
+          "code": "term",
+          "status": "passed",
+          "reason": "Срок: 24 мес.; допустимо 6–60."
+        },
+        {
+          "code": "available_limit",
+          "status": "passed",
+          "reason": "Заявленный доступный лимит: 200,000 CZK; внешняя проверка не выполнялась."
+        },
+        {
+          "code": "payment_to_income",
+          "status": "passed",
+          "reason": "Нагрузка по заявленным данным: 25.5%; максимум 45%."
+        },
+        {
+          "code": "history",
+          "status": "passed",
+          "reason": "Есть история операций за расчётное окно."
+        }
+      ],
+      "payment_to_income": 0.25496066666666667
+    },
+    "model": {
+      "available": true,
+      "score": 0.3804800367935294,
+      "threshold": 0.1007597606040451,
+      "requires_review": true,
+      "model_version": "8b204a168a84",
+      "target": "B=1: completed contract with unpaid debt; A=0: completed without problems",
+      "factors": [
+        {
+          "feature": "tx_count_90d",
+          "value": 13,
+          "log_odds_contribution": 1.6012434943110836
+        },
+        {
+          "feature": "account_age_days",
+          "value": 1379,
+          "log_odds_contribution": -1.4193836886156923
+        },
+        {
+          "feature": "min_balance_90d",
+          "value": 9734.9,
+          "log_odds_contribution": 1.4173106813767242
+        },
+        {
+          "feature": "payment_to_inflow",
+          "value": 1.535422669203588,
+          "log_odds_contribution": 1.3915742687505883
+        },
+        {
+          "feature": "monthly_inflow_90d",
+          "value": 3679,
+          "log_odds_contribution": -0.5918091830573338
+        },
+        {
+          "feature": "mean_balance_90d",
+          "value": 14564.846153846154,
+          "log_odds_contribution": -0.22525127119005303
+        },
+        {
+          "feature": "payment",
+          "value": 5648.82,
+          "log_odds_contribution": 0.11798676927302588
+        },
+        {
+          "feature": "amount",
+          "value": 120000,
+          "log_odds_contribution": 0.10606440459629549
+        },
+        {
+          "feature": "negative_share_90d",
+          "value": 0,
+          "log_odds_contribution": -0.02359202753746913
+        },
+        {
+          "feature": "months",
+          "value": 24,
+          "log_odds_contribution": 0.0014476352209052013
+        }
+      ],
+      "interpretation": "Оценка неблагоприятного исхода завершённого розничного кредита; не годовая PD. Вклады в логиты — описание модели, не причины дефолта."
+    },
+    "features": {
+      "account_age_days": 1379,
+      "amount": 120000,
+      "months": 24,
+      "payment": 5648.82,
+      "tx_count_90d": 13,
+      "mean_balance_90d": 14564.846153846154,
+      "min_balance_90d": 9734.9,
+      "negative_share_90d": 0,
+      "monthly_inflow_90d": 3679,
+      "payment_to_inflow": 1.535422669203588
+    },
+    "notice": "Учебная проверка. checks_passed не является одобрением кредита. Лимит и доход введены пользователем."
+  }
+}

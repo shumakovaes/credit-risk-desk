@@ -1,0 +1,10 @@
+{
+  "version": "educational-v1",
+  "currency": "CZK",
+  "min_amount": 1000,
+  "max_amount": 1000000,
+  "min_months": 6,
+  "max_months": 60,
+  "max_payment_to_income": 0.45,
+  "minimum_history_days": 90
+}
