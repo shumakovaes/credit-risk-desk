@@ -22,6 +22,11 @@ FEATURES = ["account_age_days", "amount", "months", "payment", "tx_count_90d", "
 FEATURE_VERSION = "strict_pre_day_90d_v1"
 
 
+def dataset_fingerprint(frame):
+    # The same training data must have the same fingerprint on Windows and Linux.
+    return hashlib.sha256(frame.to_csv(index=False, lineterminator="\n").encode()).hexdigest()
+
+
 def make_pipeline():
     return Pipeline([("imputer", SimpleImputer(strategy="median", keep_empty_features=True)),
                      ("scale", StandardScaler()),
@@ -66,7 +71,7 @@ def train(engine, destination):
     test_p = pipeline.predict_proba(test[FEATURES])[:, 1]
     dummy = DummyClassifier(strategy="prior").fit(training[FEATURES], training.target)
     dummy_p = dummy.predict_proba(test[FEATURES])[:, 1]
-    fingerprint = hashlib.sha256(frame.to_csv(index=False).encode()).hexdigest()
+    fingerprint = dataset_fingerprint(frame)
     version = hashlib.sha256((fingerprint + FEATURE_VERSION + sklearn.__version__ + "lr-C1-seed42-fn5-fp1").encode()).hexdigest()[:12]
     report = {
         "model_version": version, "feature_version": FEATURE_VERSION, "sklearn_version": sklearn.__version__,

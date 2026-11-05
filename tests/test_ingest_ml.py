@@ -51,3 +51,13 @@ def test_cost_threshold_uses_validation_costs():
     threshold, cost = choose_threshold(y, p, fn_cost=5, fp_cost=1)
     assert threshold == .3
     assert cost == 1
+
+
+def test_training_fingerprint_independent_of_platform_newlines(monkeypatch):
+    import os
+    from credit_risk_desk.ml import dataset_fingerprint
+    frame = pd.DataFrame({"loan_id": [1, 2], "amount": [100.0, 200.0]})
+    monkeypatch.setattr(os, "linesep", "\n")
+    linux_hash = dataset_fingerprint(frame)
+    monkeypatch.setattr(os, "linesep", "\r\n")
+    assert dataset_fingerprint(frame) == linux_hash

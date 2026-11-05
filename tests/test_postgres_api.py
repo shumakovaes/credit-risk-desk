@@ -79,3 +79,36 @@ def test_rule_violation_and_validation(client):
     assert client.get("/clients/999999").status_code == 404
     assert client.get("/portfolio?status=Z").status_code == 422
     assert client.get("/clients?q=%27%20OR%201%3D1--").json() == []
+
+
+@pytest.mark.parametrize("update", [
+    {"account_id": 2_147_483_648},
+    {"declared_monthly_income": 5e-324},
+    {"amount": 0.001},
+])
+def test_numeric_boundaries_rejected_before_saving(client, pg, update):
+    with pg.connect() as conn:
+        before = conn.execute(text("SELECT count(*) FROM clean.applications")).scalar_one()
+    response = client.post("/applications/evaluate", json=payload(**update))
+    assert response.status_code == 422
+    assert response.json()["detail"]
+    with pg.connect() as conn:
+        assert conn.execute(text("SELECT count(*) FROM clean.applications")).scalar_one() == before
+
+
+@pytest.mark.parametrize("value", ["NaN", "Infinity", "-Infinity"])
+def test_nonfinite_json_input_returns_validation_error(client, value):
+    response = client.post("/calculator/payment",
+                           content='{"amount":' + value + ',"annual_rate_pct":12,"months":24}',
+                           headers={"Content-Type": "application/json"})
+    assert response.status_code == 422
+    assert response.json()["detail"][0]["loc"] == ["body", "amount"]
+    assert "input" not in response.json()["detail"][0]
+
+
+@pytest.mark.parametrize("path", [
+    "/clients/2147483648", "/clients?offset=100000000000000000000",
+    "/portfolio?district=2147483648", "/portfolio/export?district=-1",
+])
+def test_identifiers_and_offsets_have_database_safe_bounds(client, path):
+    assert client.get(path).status_code == 422

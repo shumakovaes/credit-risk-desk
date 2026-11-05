@@ -72,6 +72,7 @@
             "required": false,
             "schema": {
               "type": "integer",
+              "maximum": 1000000,
               "minimum": 0,
               "default": 0,
               "title": "Offset"
@@ -111,6 +112,8 @@
             "required": true,
             "schema": {
               "type": "integer",
+              "maximum": 2147483647,
+              "minimum": 1,
               "title": "Client Id"
             }
           }
@@ -206,7 +209,9 @@
             "schema": {
               "anyOf": [
                 {
-                  "type": "integer"
+                  "type": "integer",
+                  "maximum": 2147483647,
+                  "minimum": 1
                 },
                 {
                   "type": "null"
@@ -267,7 +272,9 @@
             "schema": {
               "anyOf": [
                 {
-                  "type": "integer"
+                  "type": "integer",
+                  "maximum": 2147483647,
+                  "minimum": 1
                 },
                 {
                   "type": "null"
@@ -474,7 +481,7 @@
           "amount": {
             "type": "number",
             "maximum": 100000000.0,
-            "exclusiveMinimum": 0.0,
+            "minimum": 0.01,
             "title": "Amount"
           },
           "annual_rate_pct": {
@@ -491,6 +498,7 @@
           },
           "account_id": {
             "type": "integer",
+            "maximum": 2147483647.0,
             "exclusiveMinimum": 0.0,
             "title": "Account Id"
           },
@@ -504,7 +512,7 @@
               {
                 "type": "number",
                 "maximum": 100000000.0,
-                "exclusiveMinimum": 0.0
+                "minimum": 0.01
               },
               {
                 "type": "null"
@@ -568,7 +576,7 @@
           "amount": {
             "type": "number",
             "maximum": 100000000.0,
-            "exclusiveMinimum": 0.0,
+            "minimum": 0.01,
             "title": "Amount"
           },
           "annual_rate_pct": {

@@ -3,7 +3,7 @@ from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field
 
-Money = Annotated[float, Field(gt=0, le=100_000_000, allow_inf_nan=False)]
+Money = Annotated[float, Field(ge=0.01, le=100_000_000, allow_inf_nan=False)]
 NonNegative = Annotated[float, Field(ge=0, le=100_000_000, allow_inf_nan=False)]
 
 
@@ -15,7 +15,7 @@ class PaymentRequest(BaseModel):
 
 
 class ApplicationRequest(PaymentRequest):
-    account_id: int = Field(gt=0, strict=True)
+    account_id: int = Field(gt=0, le=2_147_483_647, strict=True)
     as_of: date
     declared_monthly_income: Money | None = None
     existing_monthly_payments: NonNegative | None = None

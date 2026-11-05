@@ -33,4 +33,4 @@
 
 ## Публикация и GitHub Actions
 
-Репозиторий опубликован: [shumakovaes/credit-risk-desk](https://github.com/shumakovaes/credit-risk-desk). В чистом окружении GitHub Actions на Ubuntu с Python 3.12 и PostgreSQL 17 установлены зависимости из `requirements.lock` и выполнен полный набор: **28 passed, 0 skipped**, одно предупреждение Starlette. [Успешный прогон](https://github.com/shumakovaes/credit-risk-desk/actions/runs/42101451200), проверенный коммит `a3cbae0a8dfdd3b75fdd20fed86f8ad459824d4e`. После этого изменён только данный протокол.
+Репозиторий опубликован: [shumakovaes/credit-risk-desk](https://github.com/shumakovaes/credit-risk-desk). В чистом окружении GitHub Actions на Ubuntu с Python 3.12 и PostgreSQL 17 установлены зависимости из `requirements.lock` и выполнен полный набор: **28 passed, 0 skipped**, одно предупреждение Starlette. [Успешный прогон](https://github.com/shumakovaes/credit-risk-desk/actions/runs/42101451200), проверенный коммит `a3cbae0a8dfdd3b75fdd20fed86f8ad459824d4e`. Последующая проверка и изменения описаны в [повторном протоколе](review.md).

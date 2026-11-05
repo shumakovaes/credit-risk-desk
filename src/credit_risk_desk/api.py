@@ -3,9 +3,10 @@ import io
 import json
 from uuid import UUID
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Path, Query, Request
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import Response
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse, Response
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -15,6 +16,14 @@ from .schemas import ApplicationRequest, PaymentRequest
 from .service import dataset, evaluate, portfolio
 
 app = FastAPI(title="Credit Risk Desk", version="0.1.0", description="Учебная аналитика розничных кредитов. Валюта: CZK.")
+
+
+@app.exception_handler(RequestValidationError)
+async def invalid_request(request: Request, exc: RequestValidationError):
+    # Invalid inputs may contain NaN/Infinity, which cannot be serialized as JSON.
+    # Return the field and reason without reflecting the untrusted input or context.
+    errors = [{key: error[key] for key in ("type", "loc", "msg")} for error in exc.errors()]
+    return JSONResponse(status_code=422, content={"detail": errors})
 
 
 @app.get("/health")
@@ -39,7 +48,7 @@ def metadata():
 
 
 @app.get("/clients")
-def clients(q: str = Query("", max_length=30), limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0)):
+def clients(q: str = Query("", max_length=30), limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0, le=1_000_000)):
     with get_engine().connect() as conn:
         rows = conn.execute(text("""SELECT a.client_id, a.account_id, a.district_id, a.opened_at
             FROM clean.accounts a WHERE CAST(a.client_id AS text) LIKE :q OR CAST(a.account_id AS text) LIKE :q
@@ -49,7 +58,7 @@ def clients(q: str = Query("", max_length=30), limit: int = Query(50, ge=1, le=5
 
 
 @app.get("/clients/{client_id}")
-def client_card(client_id: int):
+def client_card(client_id: int = Path(ge=1, le=2_147_483_647)):
     with get_engine().connect() as conn:
         client = conn.execute(text("SELECT * FROM clean.clients WHERE client_id=:id"), {"id": client_id}).mappings().first()
         if client is None:
@@ -69,13 +78,13 @@ def loans(status: str | None = Query(None, pattern="^[ABCD]$"), limit: int = Que
 
 
 @app.get("/portfolio")
-def get_portfolio(district: int | None = None, status: str | None = Query(None, pattern="^[ABCD]$")):
+def get_portfolio(district: int | None = Query(None, ge=1, le=2_147_483_647), status: str | None = Query(None, pattern="^[ABCD]$")):
     with get_engine().connect() as conn:
         return portfolio(conn, district, status)
 
 
 @app.get("/portfolio/export")
-def export_portfolio(district: int | None = None, status: str | None = Query(None, pattern="^[ABCD]$")):
+def export_portfolio(district: int | None = Query(None, ge=1, le=2_147_483_647), status: str | None = Query(None, pattern="^[ABCD]$")):
     with get_engine().connect() as conn:
         data = portfolio(conn, district, status)
     fields = ["dataset_mode", "currency", "loan_id", "account_id", "client_id", "district_id", "issued_at", "amount", "months", "payment", "status"]
